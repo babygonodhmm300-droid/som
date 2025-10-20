@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ລະບົບບັນທຶກລາຍຮັບ-ລາຍຈ່າຍຂອງ Sombath</title>
+    <style>
+    	* {
+		    box-sizing: border-box;
+		    font-family: 'Noto Sans Lao', 'Phetsarath OT', 'Saysettha OT', sans-serif;
+		}
+		body {
+		    max-width: 800px;
+		    margin: 0 auto;
+		    padding: 20px;
+		    background-color: #f5f5f5;
+		    line-height: 1.6;
+		}
+		.container {
+		    background-color: white;
+		    padding: 25px;
+		    border-radius: 12px;
+		    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+		}
+		h1 {
+		    color: #2c3e50;
+		    text-align: center;
+		    margin-bottom: 25px;
+		    font-size: 28px;
+		    font-weight: bold;
+		}
+		.auto-save-notice {
+		    background: #e8f5e8;
+		    border: 1px solid #4CAF50;
+		    border-radius: 8px;
+		    padding: 12px;
+		    margin-bottom: 20px;
+		    text-align: center;
+		    color: #2e7d32;
+		    font-weight: bold;
+		}
+		.summary {
+		    display: flex;
+		    justify-content: space-between;
+		    margin-bottom: 25px;
+		    padding: 20px;
+		    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		    border-radius: 10px;
+		    color: white;
+		}
+		.summary-item {
+		    text-align: center;
+		    flex: 1;
+		}
+		.summary-item h3 {
+		    margin: 0;
+		    font-size: 14px;
+		    opacity: 0.9;
+		}
+		.summary-item p {
+		    margin: 8px 0 0;
+		    font-size: 20px;
+		    font-weight: bold;
+		}
+		.income-summary {
+		    color: #4CAF50 !important;
+		}
+		.expense-summary {
+		    color: #ff6b6b !important;
+		}
+		.balance-summary {
+		    color: #2196F3 !important;
+		}
+		.currency-menu {
+		    display: flex;
+		    justify-content: center;
+		    margin-bottom: 20px;
+		    gap: 10px;
+		    flex-wrap: wrap;
+		}
+		.currency-btn {
+		    padding: 12px 20px;
+		    border: 2px solid #e0e0e0;
+		    border-radius: 8px;
+		    cursor: pointer;
+		    font-size: 16px;
+		    background-color: white;
+		    transition: all 0.3s ease;
+		    font-weight: 500;
+		}
+		.currency-btn.active {
+		    background-color: #4CAF50;
+		    color: white;
+		    border-color: #4CAF50;
+		    transform: translateY(-2px);
+		    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+		}
+		.type-selection {
+		    display: flex;
+		    justify-content: center;
+		    margin-bottom: 25px;
+		    gap: 15px;
+		}
+		.type-btn {
+		    padding: 12px 30px;
+		    border: 2px solid #e0e0e0;
+		    border-radius: 8px;
+		    cursor: pointer;
+		    font-size: 16px;
+		    background-color: white;
+		    transition: all 0.3s ease;
+		    font-weight: 500;
+		}
+		.type-btn.active {
+		    color: white;
+		    transform: translateY(-2px);
+		    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+		}
+		.income-btn.active {
+		    background-color: #4CAF50;
+		    border-color: #4CAF50;
+		}
+		.expense-btn.active {
+		    background-color: #f44336;
+		    border-color: #f44336;
+		}
+		.form-group {
+		    margin-bottom: 20px;
+		}
+		label {
+		    display: block;
+		    margin-bottom: 8px;
+		    font-weight: 600;
+		    color: #2c3e50;
+		    font-size: 16px;
+		}
+		input, textarea {
+		    width: 100%;
+		    padding: 12px 15px;
+		    border: 2px solid #ddd;
+		    border-radius: 8px;
+		    font-size: 16px;
+		    transition: border-color 0.3s ease;
+		}
+		input:focus, textarea:focus {
+		    outline: none;
+		    border-color: #4CAF50;
+		    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+		}
+		textarea {
+		    height: 100px;
+		    resize: vertical;
+		}
+		button {
+		    background-color: #4CAF50;
+		    color: white;
+		    border: none;
+		    padding: 12px 20px;
+		    border-radius: 8px;
+		    cursor: pointer;
+		    font-size: 16px;
+		    margin-right: 10px;
+		    margin-bottom: 10px;
+		    transition: all 0.3s ease;
+		    font-weight: 500;
+		}
+		button:hover {
+		    background-color: #45a049;
+		    transform: translateY(-2px);
+		    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+		}
+		button.secondary {
+		    background-color: #2196F3;
+		}
+		button.secondary:hover {
+		    background-color: #0b7dda;
+		}
+		button.danger {
+		    background-color: #f44336;
+		}
+		button.danger:hover {
+		    background-color: #d32f2f;
+		}
+		.data-list {
+		    margin-top: 30px;
+		}
+		.data-list h2 {
+		    color: #2c3e50;
+		    border-bottom: 2px solid #4CAF50;
+		    padding-bottom: 10px;
+		    margin-bottom: 20px;
+		}
+		.data-item {
+		    background-color: #f9f9f9;
+		    border: 1px solid #eee;
+		    border-radius: 8px;
+		    padding: 18px;
+		    margin-bottom: 12px;
+		    position: relative;
+		    transition: transform 0.2s ease;
+		}
+		.data-item:hover {
+		    transform: translateX(5px);
+		    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+		}
+		.data-item.income {
+		    border-left: 5px solid #4CAF50;
+		    background: linear-gradient(135deg, #f8fff8 0%, #e8f5e8 100%);
+		}
+		.data-item.expense {
+		    border-left: 5px solid #f44336;
+		    background: linear-gradient(135deg, #fff8f8 0%, #ffe8e8 100%);
+		}
+		.data-item h3 {
+		    margin-top: 0;
+		    color: #2c3e50;
+		    font-size: 18px;
+		}
+		.data-item p {
+		    margin: 6px 0;
+		    color: #555;
+		}
+		.delete-btn {
+		    position: absolute;
+		    top: 15px;
+		    right: 15px;
+		    background-color: #f44336;
+		    color: white;
+		    border: none;
+		    border-radius: 50%;
+		    width: 32px;
+		    height: 32px;
+		    cursor: pointer;
+		    display: flex;
+		    align-items: center;
+		    justify-content: center;
+		    transition: all 0.3s ease;
+		}
+		.delete-btn:hover {
+		    background-color: #d32f2f;
+		    transform: scale(1.1);
+		}
+		.export-buttons {
+		    margin-top: 25px;
+		    display: flex;
+		    gap: 12px;
+		    flex-wrap: wrap;
+		    justify-content: center;
+		}
+		.empty-message {
+		    text-align: center;
+		    color: #888;
+		    font-style: italic;
+		    padding: 40px 20px;
+		    background-color: #f9f9f9;
+		    border-radius: 8px;
+		    border: 2px dashed #ddd;
+		}
+		.notification-container {
+		    position: fixed;
+		    top: 20px;
+		    right: 20px;
+		    z-index: 1000;
+		    max-width: 350px;
+		}
+		.notification {
+		    background-color: #4CAF50;
+		    color: white;
+		    padding: 16px;
+		    margin-bottom: 12px;
+		    border-radius: 8px;
+		    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+		    cursor: pointer;
+		    position: relative;
+		    overflow: hidden;
+		    animation: slideIn 0.3s ease-out;
+		}
+		.notification.error {
+		    background-color: #f44336;
+		}
+		.notification.warning {
+		    background-color: #ff9800;
+		}
+		.notification.info {
+		    background-color: #2196F3;
+		}
+		.notification-timer {
+		    position: absolute;
+		    bottom: 0;
+		    left: 0;
+		    height: 4px;
+		    background-color: rgba(255,255,255,0.5);
+		    width: 100%;
+		    transform-origin: left;
+		    animation: timer 5s linear forwards;
+		}
+		@keyframes slideIn {
+		    from { transform: translateX(100%); opacity: 0; }
+		    to { transform: translateX(0); opacity: 1; }
+		}
+		@keyframes timer {
+		    from { transform: scaleX(1); }
+		    to { transform: scaleX(0); }
+		}
+		
+		/* Responsive Design */
+		@media (max-width: 768px) {
+		    body {
+		        padding: 10px;
+		    }
+		    .container {
+		        padding: 15px;
+		    }
+		    .summary {
+		        flex-direction: column;
+		        gap: 15px;
+		    }
+		    .currency-menu, .type-selection {
+		        flex-wrap: wrap;
+		    }
+		    .export-buttons {
+		        flex-direction: column;
+		    }
+		    button {
+		        width: 100%;
+		        margin-right: 0;
+		    }
+		}
+	</style>
+</head>
+<body>
+    <div class="container">
+        <h1>ລະບົບບັນທຶກລາຍຮັບ-ລາຍຈ່າຍ</h1>
+        
+        <div class="auto-save-notice">
+            <p>✅ ບັນທຶກຂໍ້ມູນເປັນ JSON </p>
+        </div>
+        
+        <div class="summary">
+            <div class="summary-item">
+                <h3>ລາຍຮັບທັງໝົດ</h3>
+                <p class="income-summary" id="total-income">0 LAK</p>
+            </div>
+            <div class="summary-item">
+                <h3>ລາຍຈ່າຍທັງໝົດ</h3>
+                <p class="expense-summary" id="total-expense">0 LAK</p>
+            </div>
+            <div class="summary-item">
+                <h3>ຍອດເງິນຄົງເຫຼືອ</h3>
+                <p class="balance-summary" id="total-balance">0 LAK</p>
+            </div>
+        </div>
+        
+        <div class="currency-menu">
+            <button class="currency-btn active" data-currency="LAK">LAK (ກີບ)</button>
+            <button class="currency-btn" data-currency="THB">THB (ບາດ)</button>
+            <button class="currency-btn" data-currency="USD">USD (ໂດລ້າ)</button>
+        </div>
+        
+        <div class="type-selection">
+            <button class="type-btn income-btn active" data-type="income">ລາຍຮັບ</button>
+            <button class="type-btn expense-btn" data-type="expense">ລາຍຈ່າຍ</button>
+        </div>
+        
+        <form id="dataForm">
+            <div class="form-group">
+                <label for="amount">ຈຳນວນເງິນ:</label>
+                <input type="number" id="amount" min="0" step="1" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="description" id="description-label">ມາຈາກໃສ:</label>
+                <input type="text" id="description" placeholder="ຕົວຢ່າງ: ເງິນເດືອນ, ຂາຍສິນຄ້າ..." required>
+            </div>
+            
+            <div class="form-group">
+                <label for="notes">ຄຳເຫັນ:</label>
+                <textarea id="notes" placeholder="ລາຍລະອຽດເພີ່ມເຕີມ..."></textarea>
+            </div>
+            
+            <button type="submit">💾 ບັນທຶກຂໍ້ມູນ</button>
+            <button type="button" id="clearForm" class="secondary">🗑️ ລ້າງຟອມ</button>
+        </form>
+        
+        <div class="export-buttons">
+            <button id="downloadJSON" class="secondary">📥 ດາວໂຫຼດຂໍ້ມູນ JSON</button>
+            <button id="importJSON" class="secondary">📤 ນຳເຂົ້າຂໍ້ມູນ JSON</button>
+            <button id="clearAll" class="danger">🔥 ລ້າງຂໍ້ມູນທັງໝົດ</button>
+        </div>
+        
+        <div class="data-list">
+            <h2>📊 ປະຫວັດການເຄື່ອນໄຫວ</h2>
+            <div id="dataContainer">
+                <!-- ข้อมูลจะแสดงที่นี่ -->
+            </div>
+        </div>
+    </div>
+
+    <div class="notification-container" id="notificationContainer">
+        <!-- การแจ้งเตือนจะแสดงที่นี่ -->
+    </div>
+
+    <input type="file" id="fileInput" accept=".json" style="display: none;">
+
+    <script>
+    	// ตัวแปรเก็บสถานะปัจจุบัน
+	let currentCurrency = 'LAK';
+	let currentType = 'income';
+	
+	// ฟังก์ชันสำหรับแสดงการแจ้งเตือน
+	function showNotification(message, type = 'success') {
+	    const notificationContainer = document.getElementById('notificationContainer');
+	    const notification = document.createElement('div');
+	    notification.className = `notification ${type}`;
+	    notification.innerHTML = `
+	        ${message}
+	        <div class="notification-timer"></div>
+	    `;
+	    
+	    notificationContainer.appendChild(notification);
+	    
+	    // ลบการแจ้งเตือนเมื่อคลิก
+	    notification.addEventListener('click', function() {
+	        this.remove();
+	    });
+	    
+	    // ลบการแจ้งเตือนอัตโนมัติหลังจาก 5 วินาที
+	    setTimeout(() => {
+	        if (notification.parentNode) {
+	            notification.remove();
+	        }
+	    }, 5000);
+	}
+	
+	// ฟังก์ชันสำหรับโหลดข้อมูลจาก localStorage
+	function loadData() {
+	    const data = localStorage.getItem('financeData');
+	    return data ? JSON.parse(data) : [];
+	}
+	
+	// ฟังก์ชันสำหรับบันทึกข้อมูลลง localStorage และสร้างไฟล์ JSON อัตโนมัติ
+	function saveData(data) {
+	    localStorage.setItem('financeData', JSON.stringify(data));
+	    
+	    // สร้างไฟล์ JSON อัตโนมัติทุกครั้งที่บันทึก
+	    autoSaveToJSON(data);
+	}
+	
+	// ฟังก์ชันบันทึกเป็น JSON อัตโนมัติ
+	function autoSaveToJSON(data) {
+	    const dataStr = JSON.stringify(data, null, 2);
+	    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+	    const url = URL.createObjectURL(dataBlob);
+	    
+	    // สร้างลิงก์ดาวน์โหลดอัตโนมัติ (แต่ไม่บังคับให้ดาวน์โหลด)
+	    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+	    const filename = `finance-data-auto-${timestamp}.json`;
+	    
+	    // บันทึกลง localStorage เพื่อให้ผู้ใช้ดาวน์โหลดได้เมื่อต้องการ
+	    localStorage.setItem('lastAutoSave', JSON.stringify({
+	        filename: filename,
+	        data: dataStr,
+	        timestamp: new Date().toISOString()
+	    }));
+	    
+	    showNotification('✅ ບັນທຶກຂໍ້ມູນເປັນ JSON ອັດຕະໂນມັດແລ້ວ', 'info');
+	}
+	
+	// ฟังก์ชันดาวน์โหลด JSON ล่าสุด
+	function downloadLatestJSON() {
+	    const lastSave = localStorage.getItem('lastAutoSave');
+	    if (!lastSave) {
+	        showNotification('❌ ບໍ່ມີຂໍ້ມູນທີ່ບັນທຶກໄວ້', 'warning');
+	        return;
+	    }
+	    
+	    const { filename, data } = JSON.parse(lastSave);
+	    const dataBlob = new Blob([data], {type: 'application/json'});
+	    const url = URL.createObjectURL(dataBlob);
+	    
+	    const a = document.createElement('a');
+	    a.href = url;
+	    a.download = filename;
+	    document.body.appendChild(a);
+	    a.click();
+	    document.body.removeChild(a);
+	    URL.revokeObjectURL(url);
+	    
+	    showNotification('📥 ດາວໂຫຼດຂໍ້ມູນ JSON ສຳເລັດແລ້ວ');
+	}
+	
+	// ฟังก์ชันนำเข้าข้อมูลจาก JSON
+	function importFromJSON(file) {
+	    const reader = new FileReader();
+	    reader.onload = function(e) {
+	        try {
+	            const importedData = JSON.parse(e.target.result);
+	            
+	            // ตรวจสอบรูปแบบข้อมูล
+	            if (!Array.isArray(importedData)) {
+	                throw new Error('รูปแบบไฟล์ไม่ถูกต้อง');
+	            }
+	            
+	            // บันทึกข้อมูลที่นำเข้า
+	            saveData(importedData);
+	            displayData();
+	            updateSummary();
+	            
+	            showNotification('✅ ນຳເຂົ້າຂໍ້ມູນສຳເລັດ', 'success');
+	        } catch (error) {
+	            showNotification('❌ ຂໍ້ມູນໃນຟາຍບໍ່ຖືກຕ້ອງ', 'error');
+	        }
+	    };
+	    reader.readAsText(file);
+	}
+	
+	// ฟังก์ชันสำหรับคำนวณและแสดงสรุป
+	function updateSummary() {
+	    const data = loadData();
+	    const currentData = data.filter(item => item.currency === currentCurrency);
+	    
+	    const totalIncome = currentData
+	        .filter(item => item.type === 'income')
+	        .reduce((sum, item) => sum + item.amount, 0);
+	    
+	    const totalExpense = currentData
+	        .filter(item => item.type === 'expense')
+	        .reduce((sum, item) => sum + item.amount, 0);
+	    
+	    const totalBalance = totalIncome - totalExpense;
+	    
+	    document.getElementById('total-income').textContent = formatCurrency(totalIncome);
+	    document.getElementById('total-expense').textContent = formatCurrency(totalExpense);
+	    document.getElementById('total-balance').textContent = formatCurrency(totalBalance);
+	}
+	
+	// ฟังก์ชันสำหรับจัดรูปแบบเงิน
+	function formatCurrency(amount) {
+	    return new Intl.NumberFormat('lo-LA').format(amount) + ' ' + currentCurrency;
+	}
+	
+	// ฟังก์ชันสำหรับแสดงข้อมูล
+	function displayData() {
+	    const dataContainer = document.getElementById('dataContainer');
+	    const data = loadData();
+	    
+	    // กรองข้อมูลตามสกุลเงินที่เลือก
+	    const filteredData = data.filter(item => item.currency === currentCurrency);
+	    
+	    if (filteredData.length === 0) {
+	        dataContainer.innerHTML = '<div class="empty-message">ຍັງບໍ່ມີຂໍ້ມູນທີ່ບັນທຶກໄວ້</div>';
+	        return;
+	    }
+	    
+	    // เรียงข้อมูลจากใหม่ไปเก่า
+	    filteredData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+	    
+	    dataContainer.innerHTML = '';
+	    filteredData.forEach((item) => {
+	        const dataItem = document.createElement('div');
+	        dataItem.className = `data-item ${item.type}`;
+	        
+	        const typeText = item.type === 'income' ? '💰 ລາຍຮັບ' : '💸 ລາຍຈ່າຍ';
+	        const sourceText = item.type === 'income' ? 'ມາຈາກ' : 'ຊື້';
+	        
+	        dataItem.innerHTML = `
+	            <h3>${typeText} - ${formatCurrency(item.amount)}</h3>
+	            <p><strong>${sourceText}:</strong> ${item.description}</p>
+	            <p><strong>ຄຳເຫັນ:</strong> ${item.notes || '-'}</p>
+	            <p><strong>ວັນທີ:</strong> ${new Date(item.timestamp).toLocaleString('lo-LA')}</p>
+	            <button class="delete-btn" data-id="${item.id}">×</button>
+	        `;
+	        dataContainer.appendChild(dataItem);
+	    });
+	    
+	    // เพิ่ม event listener สำหรับปุ่มลบ
+	    document.querySelectorAll('.delete-btn').forEach(button => {
+	        button.addEventListener('click', function() {
+	            const id = this.getAttribute('data-id');
+	            deleteData(id);
+	        });
+	    });
+	}
+	
+	// ฟังก์ชันสำหรับเพิ่มข้อมูลใหม่
+	function addData(newData) {
+	    const data = loadData();
+	    const id = Date.now().toString();
+	    data.push({
+	        id,
+	        ...newData,
+	        currency: currentCurrency,
+	        timestamp: new Date().toISOString()
+	    });
+	    saveData(data);
+	    displayData();
+	    updateSummary();
+	    
+	    // แสดงการแจ้งเตือน
+	    const typeText = newData.type === 'income' ? 'ລາຍຮັບ' : 'ລາຍຈ່າຍ';
+	    showNotification(`✅ ບັນທຶກ${typeText} ${formatCurrency(newData.amount)} ສຳເລັດ`);
+	}
+	
+	// ฟังก์ชันสำหรับลบข้อมูล
+	function deleteData(id) {
+	    if (confirm('ທ່ານແນ່ໃຈບໍ່ທີ່ຈະລຶບຂໍ້ມູນນີ້?')) {
+	        const data = loadData();
+	        const updatedData = data.filter(item => item.id !== id);
+	        saveData(updatedData);
+	        displayData();
+	        updateSummary();
+	        showNotification('🗑️ ລຶບຂໍ້ມູນສຳເລັດແລ້ວ', 'warning');
+	    }
+	}
+	
+	// ฟังก์ชันสำหรับล้างข้อมูลทั้งหมด
+	function clearAllData() {
+	    if (confirm('ທ່ານແນ່ໃຈບໍ່ທີ່ຈະລຶບຂໍ້ມູນທັງໝົດ?')) {
+	        localStorage.removeItem('financeData');
+	        localStorage.removeItem('lastAutoSave');
+	        displayData();
+	        updateSummary();
+	        showNotification('🔥 ລຶບຂໍ້ມູນທັງໝົດສຳເລັດແລ້ວ', 'error');
+	    }
+	}
+	
+	// ฟังก์ชันสำหรับเปลี่ยนสกุลเงิน
+	function changeCurrency(currency) {
+	    currentCurrency = currency;
+	    
+	    // อัพเดตปุ่มสกุลเงิน
+	    document.querySelectorAll('.currency-btn').forEach(btn => {
+	        btn.classList.remove('active');
+	    });
+	    document.querySelector(`.currency-btn[data-currency="${currency}"]`).classList.add('active');
+	    
+	    // อัพเดตฟอร์มและข้อมูล
+	    updateSummary();
+	    displayData();
+	}
+	
+	// ฟังก์ชันสำหรับเปลี่ยนประเภท (รายรับ/รายจ่าย)
+	function changeType(type) {
+	    currentType = type;
+	    
+	    // อัพเดตปุ่มประเภท
+	    document.querySelectorAll('.type-btn').forEach(btn => {
+	        btn.classList.remove('active');
+	    });
+	    document.querySelector(`.type-btn[data-type="${type}"]`).classList.add('active');
+	    
+	    // อัพเดต label ของฟอร์ม
+	    const descriptionLabel = document.getElementById('description-label');
+	    descriptionLabel.textContent = type === 'income' ? 'ມາຈາກໃສ:' : 'ຊື້ຫຍັງ:';
+	}
+	
+	// Event Listeners
+	document.addEventListener('DOMContentLoaded', function() {
+	    // โหลดและแสดงข้อมูลเมื่อหน้าเว็บโหลดเสร็จ
+	    displayData();
+	    updateSummary();
+	    
+	    // Event สำหรับฟอร์ม
+	    document.getElementById('dataForm').addEventListener('submit', function(e) {
+	        e.preventDefault();
+	        
+	        const amount = parseFloat(document.getElementById('amount').value);
+	        const description = document.getElementById('description').value;
+	        const notes = document.getElementById('notes').value;
+	        
+	        if (!amount || amount <= 0) {
+	            showNotification('❌ ກະລຸນາໃສ່ຈຳນວນເງິນທີ່ຖືກຕ້ອງ', 'error');
+	            return;
+	        }
+	        
+	        addData({
+	            type: currentType,
+	            amount,
+	            description,
+	            notes
+	        });
+	        
+	        this.reset();
+	    });
+	
+	    // Event สำหรับล้างฟอร์ม
+	    document.getElementById('clearForm').addEventListener('click', function() {
+	        document.getElementById('dataForm').reset();
+	    });
+	
+	    // Event สำหรับปุ่มสกุลเงิน
+	    document.querySelectorAll('.currency-btn').forEach(btn => {
+	        btn.addEventListener('click', function() {
+	            changeCurrency(this.getAttribute('data-currency'));
+	        });
+	    });
+	
+	    // Event สำหรับปุ่มประเภท
+	    document.querySelectorAll('.type-btn').forEach(btn => {
+	        btn.addEventListener('click', function() {
+	            changeType(this.getAttribute('data-type'));
+	        });
+	    });
+	
+	    // Event สำหรับปุ่มดาวน์โหลด JSON
+	    document.getElementById('downloadJSON').addEventListener('click', downloadLatestJSON);
+	
+	    // Event สำหรับปุ่มนำเข้า JSON
+	    document.getElementById('importJSON').addEventListener('click', function() {
+	        document.getElementById('fileInput').click();
+	    });
+	
+	    // Event สำหรับเลือกไฟล์
+	    document.getElementById('fileInput').addEventListener('change', function(e) {
+	        const file = e.target.files[0];
+	        if (file) {
+	            importFromJSON(file);
+	        }
+	        this.value = ''; // รีเซ็ต input
+	    });
+	
+	    // Event สำหรับล้างข้อมูลทั้งหมด
+	    document.getElementById('clearAll').addEventListener('click', clearAllData);
+	});
+</script>
+</body>
+</html>
